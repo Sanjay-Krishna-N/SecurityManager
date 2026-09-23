@@ -30,7 +30,4 @@ public class RefreshTokenStore {
         validTokens.remove(token);
     }
 
-    public void revokeAllForUser(String username) {
-        validTokens.values().removeIf(u -> u.equals(username));
-    }
 }
