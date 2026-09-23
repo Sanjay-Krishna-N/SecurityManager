@@ -1,5 +1,13 @@
 package org.secured.controller.jwt;
 
+/**
+ * ------------------------------------------------------------------------
+ * Author   : Sanjay Krishna Narayanan
+ * Created  : 9/23/26
+ * Version  : 1.0
+ * ------------------------------------------------------------------------
+ */
+
 import lombok.RequiredArgsConstructor;
 import org.secured.util.jwt.JwtUtil;
 import org.secured.util.jwt.RefreshTokenStore;

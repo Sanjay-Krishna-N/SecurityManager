@@ -1,5 +1,13 @@
 package org.secured.filter.jwt;
 
+/**
+ * ------------------------------------------------------------------------
+ * Author   : Sanjay Krishna Narayanan
+ * Created  : 9/23/26
+ * Version  : 1.0
+ * ------------------------------------------------------------------------
+ */
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

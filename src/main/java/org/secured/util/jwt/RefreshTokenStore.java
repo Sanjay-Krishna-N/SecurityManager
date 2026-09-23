@@ -1,5 +1,13 @@
 package org.secured.util.jwt;
 
+/**
+ * ------------------------------------------------------------------------
+ * Author   : Sanjay Krishna Narayanan
+ * Created  : 9/23/26
+ * Version  : 1.0
+ * ------------------------------------------------------------------------
+ */
+
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

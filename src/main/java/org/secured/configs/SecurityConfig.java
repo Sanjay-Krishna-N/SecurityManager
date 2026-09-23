@@ -1,5 +1,13 @@
 package org.secured.configs;
 
+/**
+ * ------------------------------------------------------------------------
+ * Author   : Sanjay Krishna Narayanan
+ * Created  : 9/23/26
+ * Version  : 1.0
+ * ------------------------------------------------------------------------
+ */
+
 import lombok.RequiredArgsConstructor;
 import org.secured.filter.jwt.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
