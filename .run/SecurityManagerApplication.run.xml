@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SecurityManagerApplication" type="CompoundRunConfigurationType">
+    <toRun name="SecurityManagerApplication-8001" type="SpringBootApplicationConfigurationType" />
+    <toRun name="SecurityManagerApplication-8002" type="SpringBootApplicationConfigurationType" />
+    <toRun name="SecurityManagerApplication-8003" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
