@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+
+    <Properties>
+        <!-- Base default pattern, kept OUTSIDE any ${...} wrapper so its internal
+             %d{...} / %logger{36} braces are never mistaken for lookup syntax -->
+        <Property name="DEFAULT_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Property>
+
+        <!-- Spring Boot auto-populates these as system properties from application.yml
+             before Log4j2 initializes: LOG_FILE (from logging.file.name),
+             CONSOLE_LOG_PATTERN, FILE_LOG_PATTERN (from logging.pattern.*) -->
+        <Property name="LOG_PATH">${sys:log.path:-${env:LOG_DIR:-logs}}</Property>
+        <Property name="CONSOLE_PATTERN">${sys:CONSOLE_LOG_PATTERN:-${DEFAULT_PATTERN}}</Property>
+        <Property name="FILE_PATTERN">${sys:FILE_LOG_PATTERN:-${DEFAULT_PATTERN}}</Property>
+
+        <!-- Not covered by Spring Boot's logging.* keys — kept as separate overridable knobs.
+             NOTE: sys/env key names are deliberately DIFFERENT from the property name itself
+             (e.g. app.name, not APP_NAME) to avoid Log4j2's self-referential interpolation
+             false-positive ("Infinite loop in property interpolation") -->
+        <Property name="APP_NAME">${sys:app.name}</Property>
+        <Property name="FILE_SIZE">${sys:LOG_FILE_SIZE:-${env:LOG_FILE_SIZE:-50MB}}</Property>
+        <Property name="MAX_FILES">${sys:LOG_MAX_FILES:-${env:LOG_MAX_FILES:-10}}</Property>
+        <Property name="RETENTION_DAYS">${sys:LOG_RETENTION_DAYS:-${env:LOG_RETENTION_DAYS:-30}}</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}"/>
+        </Console>
+
+        <!-- Uses LOG_FILE directly, so logging.file.name in application.yml controls the path -->
+        <RollingRandomAccessFile name="RollingFile"
+                                 fileName="${sys:LOG_FILE:-${LOG_PATH}/${APP_NAME}.log}"
+                                 filePattern="${LOG_PATH}/archive/${APP_NAME}-%d{yyyy-MM-dd}-%i.log.gz"
+                                 immediateFlush="false">
+            <PatternLayout pattern="${FILE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${MAX_FILES}" fileIndex="min">
+                <Delete basePath="${LOG_PATH}/archive" maxDepth="1">
+                    <IfFileName glob="${APP_NAME}-*.log.gz"/>
+                    <IfLastModified age="${RETENTION_DAYS}d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+<!--        <RollingRandomAccessFile name="ErrorFile"-->
+<!--                                 fileName="${LOG_PATH}/${APP_NAME}-error.log"-->
+<!--                                 filePattern="${LOG_PATH}/archive/${APP_NAME}-error-%d{yyyy-MM-dd}-%i.log.gz"-->
+<!--                                 immediateFlush="false">-->
+<!--            <PatternLayout pattern="${FILE_PATTERN}"/>-->
+<!--            <Filters>-->
+<!--                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>-->
+<!--            </Filters>-->
+<!--            <Policies>-->
+<!--                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+<!--                <SizeBasedTriggeringPolicy size="${FILE_SIZE}"/>-->
+<!--            </Policies>-->
+<!--            <DefaultRolloverStrategy max="${MAX_FILES}">-->
+<!--                <Delete basePath="${LOG_PATH}/archive" maxDepth="1">-->
+<!--                    <IfFileName glob="${APP_NAME}-error-*.log.gz"/>-->
+<!--                    <IfLastModified age="${RETENTION_DAYS}d"/>-->
+<!--                </Delete>-->
+<!--            </DefaultRolloverStrategy>-->
+<!--        </RollingRandomAccessFile>-->
+
+        <Async name="AsyncFile" bufferSize="4096">
+            <AppenderRef ref="RollingFile"/>
+        </Async>
+<!--        <Async name="AsyncErrorFile" bufferSize="4096">-->
+<!--            <AppenderRef ref="ErrorFile"/>-->
+<!--        </Async>-->
+    </Appenders>
+
+    <!--
+      NOTE: No <Loggers> levels are hardcoded here.
+      Spring Boot reads logging.level.* from application.yml and applies levels
+      to the Log4j2 context programmatically at startup — whatever you set in
+      YAML (root, org.pluto.clientmachine, org.springframework, org.hibernate)
+      takes effect automatically. You still need to wire WHICH appenders each
+      logger writes to, since Boot doesn't know that part.
+    -->
+    <Loggers>
+        <Logger name="org.springframework" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.hibernate" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.pluto.clientmachine" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncFile"/>
+<!--            <AppenderRef ref="AsyncErrorFile"/>-->
+        </Logger>
+
+        <Root>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="AsyncFile"/>
+<!--            <AppenderRef ref="AsyncErrorFile"/>-->
+        </Root>
+    </Loggers>
+
+</Configuration>
