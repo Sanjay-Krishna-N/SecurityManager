@@ -2,7 +2,7 @@
   <configuration default="false" name="SecurityManagerApplication-8002" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
     <module name="SecurityManager" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="org.secured.app.securitymanager.SecurityManagerApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.secured.SecurityManagerApplication" />
     <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev -Dserver.port=8002 -Dapp.name=SecurityManager" />
     <extension name="coverage">
       <pattern>
