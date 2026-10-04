@@ -1,4 +1,4 @@
-package org.secured.app.securitymanager;
+package org.secured;
 
 /**
  * ------------------------------------------------------------------------
@@ -11,7 +11,7 @@ package org.secured.app.securitymanager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "org.secured")
+@SpringBootApplication
 public class SecurityManagerApplication {
 
     public static void main(String[] args) {
